@@ -1,0 +1,1 @@
+conda create -n tts python=3.11 -y && source $(conda info --base)/etc/profile.d/conda.sh && conda activate tts && sudo apt update -y && sudo apt install -y build-essential cmake && pip install numpy && pip install chatterbox-tts g2pk openai-whisper && pip uninstall torch torchaudio && pip install torch torchaudio
