@@ -23,23 +23,11 @@ class GenerateResponse(BaseModel):
 
 
 app = FastAPI(title="TTS API")
-
-
-@app.on_event("startup")
-def startup_event():
-    # 전역 TTS 인스턴스 생성
-    global tts
-    tts = TTS()
-
+tts = TTS()
 
 @app.post("/generate", response_model=GenerateResponse)
 def generate(req: GenerateRequest):
     try:
-        # 입력으로 audio_prompt가 들어오면 재초기화
-        if getattr(tts, "ref_path", None) is None or req.audio_prompt:
-            # 간단하게 새로운 TTS 인스턴스로 교체
-            tts = TTS(audio_prompt=req.audio_prompt)
-
         result = tts.generate(
             req.text,
             language_id=req.language_id,
@@ -74,4 +62,4 @@ def generate(req: GenerateRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=14450)
