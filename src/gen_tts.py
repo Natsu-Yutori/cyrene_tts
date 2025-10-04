@@ -6,6 +6,7 @@ from g2pk import G2p
 from pathlib import Path
 import tempfile
 from src.gen_timestamp import TTSTimestamp
+from src.post_process import AudioPostProcessor
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,6 +23,7 @@ class TTS:
         self.model = ChatterboxMultilingualTTS.from_pretrained(device="cuda")
         self.tts_timestamp = TTSTimestamp(whisper_model="small")
         self.sr = 24000
+        self.post_processor = AudioPostProcessor(sample_rate=self.sr)
 
         match audio_prompt:
             case "miyako":
@@ -56,6 +58,8 @@ class TTS:
             exaggeration=exaggeration,
             temperature=temperature
         )
+
+        audio_tensor = self.post_processor.apply(audio_tensor, sample_rate=self.sr)
 
         if gen_timestamp:
             # 빈 문자열(단어 없음) 처리
